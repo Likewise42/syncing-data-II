@@ -36,8 +36,6 @@
       z-index: 1;
       cursor: pointer;
     }
-     
-    
   </style>
   <script type="text/babel" >
     "use strict";
@@ -62,10 +60,6 @@
         console.log('connected to the server');
         
         socket.emit('join', {});
-        socket.on('uID',(data)=>{
-          uID = data.uID;
-          console.log(uID);
-        });
     
         canvas = document.querySelector("#mainCanvas");
         ctx = canvas.getContext("2d");
@@ -85,6 +79,14 @@
         socket.on('recieveDraw', (data)=>{
           handleMessage(data);
         });
+        
+        socket.on('requestCanvas', ()=>{
+          sendCanvas();
+        });
+        
+        socket.on('recieveCanvas', (data)=>{
+          handleMessage(data);
+        })
       });
     };
     
@@ -101,6 +103,18 @@
       image.src = data.imgData;
     };
 
+    const sendCanvas = () => {
+      const data = {
+        x: 0,
+        y: 0,
+        height: canvas.height,
+        width: canvas.width,
+        imgData: canvas.toDataURL()
+      };
+      
+      socket.emit('sendCanvas', data);
+    };
+
     const sendData = () => {
       const data = {
         x: 0,
@@ -114,7 +128,6 @@
     };
 
     const doClearBuffer = (e) => {
-      console.log("test");
       bufferCtx.clearRect(0,0,bufferCtx.canvas.width,ctx.canvas.height)
     };
 

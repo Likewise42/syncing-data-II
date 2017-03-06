@@ -24,10 +24,16 @@ const listeners = (sock) => {
 
   socket.on('join', () => {
     socket.join('room1');
+    
+    socket.broadcast.to('room1').emit('requestCanvas');
   });
 
   socket.on('draw', (data) => {
     socket.broadcast.to('room1').emit('recieveDraw', data);
+  });
+  
+  socket.on('sendCanvas', (data) =>{
+    socket.broadcast.to('room1').emit('recieveCanvas', data);
   });
 };
 
