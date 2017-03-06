@@ -19,4 +19,23 @@ console.log(`Listening on 127.0.0.1: ${port}`);
 
 const io = socketio(app);
 
+const listeners = (sock) => {
+  const socket = sock;
+
+  socket.on('join', () => {
+    socket.join('room1');
+  });
+
+  socket.on('draw', (data) => {
+    socket.broadcast.to('room1').emit('recieveDraw', data);
+  });
+};
+
+io.sockets.on('connection', (socket) => {
+  console.log('someone joined');
+
+  listeners(socket);
+});
+
+
 console.log('Websocket server started');
